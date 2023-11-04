@@ -1,43 +1,106 @@
 import 'package:flutter/material.dart';
+import 'package:introapp/data/questions.dart';
 
-// auto execute
 void main() {
-  // flutterı'ı initialize eden runApp
-
-  // Widget => En küçükten en büyüğe giden şablonlar.
-
-  // named & unnamed parameters
-
-  // constant
-  runApp(
-    MaterialApp(
-      home: Scaffold(
-          backgroundColor:
-              Color.fromARGB(255, 57, 7, 96), // Configuration Widget
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset("assets/photo.jpg"),
-                Text("Seçkin Ersoy",
-                    style: TextStyle(fontSize: 30, color: Colors.white)),
-                Text("Tobeto - Mobil Geliştirici - 1B",
-                    style: TextStyle(fontSize: 25, color: Colors.white)),
-                Text("31.10.2023",
-                    style: TextStyle(fontSize: 20, color: Colors.white))
-              ],
-            ),
-          )),
-    ),
-  );
+  runApp(const MaterialApp(home: QuizScreen()));
 }
 
-  // intelisense => ctrl + space
+// boilerplate => basmakalıp
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key}); // 1. gereksinim
 
- // SHIFT + ALT + F => FORMAT DOCUMENT
+  // 2. gereksinim
+  // Hot Reload => Restarta gerek kalmadan (spesifik durumlar hariç)
+  // değişikliklerin görünmesi.
+  Widget build(BuildContext buildContext) {
+    return Scaffold(
+      backgroundColor: Colors.deepPurpleAccent,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // asset
+            Image.asset(
+              "assets/images/quiz-logo.png",
+              width: 240,
+            ),
+            Image.network(
+                "https://miro.medium.com/v2/resize:fit:720/format:webp/1*FBRsnCP9wE84UVW1Kkv5Yw.jpeg"),
+            const Text("Quiz App",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.5)),
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.amber, foregroundColor: Colors.black),
+              child: const Text(
+                "Oyuna Başla",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
 
- // Stateless => UI Widgetları olarak düşünülebilir. Dynamic bir alan yoksa stateless olarak işlenir, flutterın bu widgeta harcadığı performans daha iyi hale gelecek.
- // Stateful => Dynamic UI button değişmesi vb.
+// SABIT UI
 
+// StatefullWidget
 
+// 2 class
+// Widget - State
+class QuizScreen extends StatefulWidget {
+  const QuizScreen({super.key});
 
+  @override
+  State<QuizScreen> createState() {
+    return _QuizState();
+  }
+}
+
+// _State
+class _QuizState extends State<QuizScreen> {
+  String text = "Aşağıdakilerden hangisi bir widget türüdür";
+  int questionNumber = 0;
+  void changeText() {
+    setState(() {
+      text = "Yeni Değer";
+    });
+  }
+
+  void changeQuestion() {
+    setState(() {
+      if (questionNumber >= questions.length - 1) {
+        questionNumber = 0;
+      } else {
+        questionNumber++;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext buildContext) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(questions[questionNumber].question),
+            ...questions[questionNumber].answers.map((answer) {
+              return ElevatedButton(
+                  onPressed: () {
+                    changeQuestion();
+                  },
+                  child: Text(answer));
+            })
+          ],
+        ),
+      ),
+    );
+  }
+}
